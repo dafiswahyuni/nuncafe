@@ -54,8 +54,14 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/sales-report">
+                    <a href="/salesreport">
                       <i class="zmdi zmdi-calendar-check"></i> <span>Pesanan</span>
+                        <small class="badge float-right badge-light">New</small>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('salesreport.create') }}" >
+                      <i class="zmdi zmdi-calendar-check"></i> <span>Tambah Menu</span>
                         <small class="badge float-right badge-light">New</small>
                     </a>
                 </li>

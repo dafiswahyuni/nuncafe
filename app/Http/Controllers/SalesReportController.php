@@ -2,60 +2,84 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Menu;
 use App\Models\SalesReport;
 use Illuminate\Http\Request;
 
 class SalesReportController extends Controller
 {
-    // Display a listing of sales reports
+    // Display a listing of the menu
     public function index()
     {
-        return SalesReport::all();
+        $menus = Menu::all(); // Mengambil semua data menu
+        return view('salesreport.index', compact('menus')); // Menampilkan ke view
     }
-
-    // Show the form for creating a new report
+    // Show the form for creating a new menu
     public function create()
     {
-        // Not used for APIs, usually handled on the frontend.
+        // Menampilkan form untuk membuat menu baru
+        return view('salesreport.create');
+        
     }
 
-    // Store a newly created report
+    // Store a newly created menu
     public function store(Request $request)
     {
+        // Validasi input dari user
         $request->validate([
-            'total_sales' => 'required|numeric|min:0',
-            'report_date' => 'required|date',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
         ]);
 
-        $report = SalesReport::create($request->all());
+        // Membuat menu baru
+        $salesReport = SalesReport::create($request->all());
 
-        return response()->json(['message' => 'Sales report created successfully', 'data' => $report], 201);
+        // Redirect ke halaman index dengan pesan sukses
+        return redirect()->route('salesreport.index')
+            ->with('success', 'Menu created successfully');
     }
 
-    // Display a specific report
+    // Display a specific menu
     public function show(SalesReport $salesReport)
     {
-        return $salesReport;
+        // Menampilkan detail menu tertentu
+        return view('salesreport.show', compact('salesreport'));
     }
 
-    // Update a report
+    // Show the form for editing a menu
+    public function edit(SalesReport $salesReport)
+    {
+        // Menampilkan form edit untuk menu tertentu
+        return view('salesreport.edit', compact('salesreport'));
+    }
+
+    // Update a menu
     public function update(Request $request, SalesReport $salesReport)
     {
+        // Validasi input dari user
         $request->validate([
-            'total_sales' => 'required|numeric|min:0',
-            'report_date' => 'required|date',
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:0',
         ]);
 
+        // Update data menu
         $salesReport->update($request->all());
 
-        return response()->json(['message' => 'Sales report updated successfully', 'data' => $salesReport]);
+        // Redirect ke halaman index dengan pesan sukses
+        return redirect()->route('salesreport.index')
+            ->with('success', 'Menu updated successfully');
     }
 
-    // Remove a report
+    // Remove a menu
     public function destroy(SalesReport $salesReport)
     {
+        // Hapus menu dari database
         $salesReport->delete();
 
-        return response()->json(['message' => 'Sales report deleted successfully']);
+        // Redirect ke halaman index dengan pesan sukses
+        return redirect()->route('dashboard')
+            ->with('success', 'Menu deleted successfully');
     }
 }

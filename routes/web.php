@@ -12,16 +12,22 @@ use App\Http\Controllers\LoginController;
 Route::resource('admin', AdminController::class);
 Route::resource('menu', MenuController::class);
 Route::resource('order', OrderController::class);
-Route::resource('sales-report', SalesReportController::class);
+Route::resource('salesreport', SalesReportController::class);
 Route::resource('home', HomeController::class);
 
 // Dashboard - Dengan Pengecekan Session di Route
+// Route::get('dashboard', function () {
+//     if (!session('admin_id')) {
+//         return redirect()->route('login')->withErrors(['error' => 'You must be logged in to access the dashboard.']);
+//     }
+//     return view('dashboard', ['admin_name' => session('admin_name')]);
+// })->name('dashboard');
+
 Route::get('dashboard', function () {
-    if (!session('admin_id')) {
-        return redirect()->route('login')->withErrors(['error' => 'You must be logged in to access the dashboard.']);
-    }
-    return view('dashboard', ['admin_name' => session('admin_name')]);
-})->name('dashboard');
+    return view('dashboard');
+})->name('dashboard')->middleware();
+
+Route::get('create', [SalesReportController::class, 'create'])->name('salesreport.create');
 
 Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('login', [LoginController::class, 'login']);

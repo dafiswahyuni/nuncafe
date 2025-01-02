@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Admin;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
@@ -19,26 +21,21 @@ class LoginController extends Controller
         // Validasi input
         $request->validate([
             'email' => 'required|email',
-            'password' => 'required|string|min:6',
+            'password' => 'required',
         ]);
 
-        // Cari admin berdasarkan email
-        $admin = Admin::where('email', $request->email)->first();
+        // Attempt login
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $request->remember)) {
+            // Regenerate session untuk keamanan
+            $request->session()->regenerate();
 
-        // Verifikasi password
-        if ($admin && password_verify($request->password, $admin->password)) {
-            // Simpan informasi ke session
-            session([
-                'admin_id' => $admin->id,
-                'admin_name' => $admin->name
-            ]);
-
-            return redirect()->route('dashboard')->with('success', 'Welcome back, ' . $admin->name . '!');
+            // Redirect ke dashboard dengan pesan sukses
+            return redirect()->route('dashboard')->with('success', 'Welcome back, ' . Auth::user()->name . '!');
         }
 
+        // Jika gagal login
         return back()->withErrors(['email' => 'Invalid credentials'])->withInput();
     }
-
     // Tangani logout
     public function logout()
     {

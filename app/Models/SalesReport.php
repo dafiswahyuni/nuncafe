@@ -6,6 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class SalesReport extends Model
 {
-    protected $fillable = ['total_sales', 'report_date'];
+    protected $fillable = ['name', 'description', 'price'];
 
 }

@@ -1,4 +1,4 @@
-@extends('layout.menu')
+
 
 @section('title', 'Menu List')
 
